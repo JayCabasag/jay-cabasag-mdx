@@ -22,14 +22,14 @@ export default function BlogsPage({blogs}:BlogsPageProps) {
         <ul className='mt-2 flex flex-col gap-4'>
           {blogs.map((blog: BlogMeta, index: number) => {
             return <li key={index}>
-              <Link href={`/blogs/${blog.slug}`} className='font-extralight text-md'>
+              <Link href={`/blogs/${blog.slug}`} className='font-medium  text-md'>
                 {blog.title}
-              <p className='text-xs font-extralight'>
+              <p className='text-xs font-extralight ml-2'>
                 {blog.excerpt}
               </p> 
-              <ul className='flex gap-2 text-xs mt-2'>
+              <ul className='flex gap-2 text-xs mt-2 ml-1'>
                 {blog.tags.map((tag: string, index: number) => {
-                  return <li key={index} className='px-2 py-1 bg-slate-100'>
+                  return <li key={index} className='px-2 py-1 bg-slate-100 rounded-sm'>
                       {tag}
                     </li>
                 })}

@@ -1,0 +1,282 @@
+---
+title: How to use getServerSideProps, getStaticProps and getStaticPaths?
+tags:
+  - js
+  - next js
+  - react js
+  - vercel
+date: 2020-04-30
+excerpt: Next.js is a popular open-source React-based web application framework that enables developers to build server-rendered React applications with ease.
+---
+<br />
+When I started usign react, I always use useEffect to fetch data from the server. Like this :
+<br />
+```JavaScript
+export default function index(){
+  const [results, setResults] = useState([])
+
+  useEffect(() => {
+    const getResults = async () => {
+      const res = await fetch("sample/api/results")
+      const data = await res.json()
+      setResults(data)
+    }
+    getResults()
+  },[])
+
+  return (
+    <div>{JSON.stringify(results)}</div>
+  )
+}
+```
+<br />
+And even when I'm using Next.js, I still do the same. But overtime, I find myself seeing components rerender many times and calling the API endpoint repeatedly which is
+not only is ineffecient but also slows down the app. I had used several third data fetching libraries like, **SWR** and **Tanstack Query** and so far these libraries are amazing
+and is very effecient in terms of handling async data. But, Next JS have a different approach or ways in order to fetch data not directly to the client but to the server.
+<br />
+These three methods are used in Next.js to fetch data and generate dynamic pages. Here's a brief overview of each:
+<br />
+<ul className="mdx-bullet-list">
+  <li>
+  **getServerSideProps**: This method is used to fetch data on the server every time a request is made to the page. This can be useful when the data needs to be frequently updated, and it can't be pre-rendered at build time. This method is used in conjunction with server-side rendering (SSR) in Next.js.
+  </li>
+  <br />
+  <li>
+  **getStaticProps**: This method is used to fetch data at build time and pre-render the page with the fetched data. This can be useful when the data doesn't change frequently and can be pre-rendered at build time. This method is used in conjunction with static site generation (SSG) in Next.js.
+  </li>
+  <br />
+  <li>
+  **getStaticPaths:** This method is used to generate dynamic routes based on the data fetched with getStaticProps. This can be useful when the data has dynamic parameters that are used to generate unique pages. For example, if you have a blog with multiple posts, you can use getStaticPaths to generate a page for each post based on its ID.
+  </li>
+</ul>
+<br />
+
+**Note:** You can only use these data fetching inside **page component**.
+<br />
+<h2 className="mdx-heading"> getServerSideProps </h2>
+<br />
+```JavaScript
+export async function getServerSideProps(context) {
+  return {
+    props: {}
+  }
+}
+```
+
+<br />
+<h2 className="mdx-heading"> getStaticProps </h2>
+<br />
+```JavaScript
+export async function getStaticProps(context) {
+  return {
+    props: {}
+  }
+}
+```
+
+<br />
+<h2 className="mdx-heading"> getStaticPaths </h2>
+<br />
+**Note:** You can only use **getStaticPaths ** along with **getStaticProps**.
+<br />
+```JavaScript
+export async function getStaticPaths() {
+  return {
+    paths: [{ params: { id: '1' } }, { params: { id: '2' } }],
+    fallback: false, // can also be true or 'blocking'
+  }
+}
+```
+<br />
+<h2 className="mdx-heading"> Full implementation example </h2>
+<br />
+
+<h2 className="mdx-heading"> getServerSideProps </h2>
+<br />
+This is a simple data fetching to get a data of a post from an api and is being rendered to the component
+using **JSON.stringify()** to display the data that we get from the server that is sent to the component as props. Always remember that this is a **page** and not an app component.
+This means that whenever the user refresh the page or viewed the page. It will always call the server to request for a post data.
+This is kind of slower and may cause delay of viewing page when transitioning specially if the API is not highly polished since it builds it over and over again before the page is sent to the client.
+<br />
+```JavaScript
+export default function Post({ post }) {
+  return (
+    <div>{JSON.stringify(post)}</div>
+  )
+}
+
+export async function getServerSideProps(context) {
+  const res = await fetch("sample/api/post/1")
+  const data = await res.json()
+  return {
+    props: {
+      post: data
+    }
+  }
+}
+```
+
+<br />
+<h2 className="mdx-heading"> getStaticProps </h2>
+<br />
+If you just realized it now, the code is kinda same to the one above, I just changed it to using **getStaticProps**.
+The only difference with **getServerSideProps** is that this will not request another data from the server once the page is built.
+Lets say for example, when user visit the Post page, the page is generated to the Server. Now, when the user visited the page again
+its no longer going to build the page that is generated but it will just sent you the old page that was already generated
+when the page is built hence its now called a static page.
+<br />
+And the question is, what if the post gets updated? will the data stays the same? The answer is **Yes** it will be the same
+static page when the page was first requested. But what if I want to have a static but become will also automatically updated when my data is changed.
+No worries, Next JS got you covered with **Incremental Static Regeneration**
+<br />
+```JavaScript
+export default function Post({ post }) {
+  return (
+    <div>{JSON.stringify(post)}</div>
+  )
+}
+
+export async function getStaticProps(context) {
+  const res = await fetch("sample/api/post/1")
+  const data = await res.json()
+  return {
+    props: {
+      post: data
+    }
+  }
+}
+```
+<br />
+<h2 className="mdx-heading"> Incremental Static Regeneration </h2>
+<br />
+Basically, what we did is add a **revalidate: 10** which means every 10 seconds update the static page. and that's it. easy enough right?
+<br />
+```JavaScript
+export default function Post({ post }) {
+  return (
+    <div>{JSON.stringify(post)}</div>
+  )
+}
+
+export async function getStaticProps(context) {
+  const res = await fetch("sample/api/post/1")
+  const data = await res.json()
+  return {
+    props: {
+      post: data
+    },
+    revalidate: 10
+  }
+}
+```
+
+<br />
+<h2 className="mdx-heading"> getStaticPaths </h2>
+<br />
+```JavaScript
+pages/posts/[postId].js
+
+export default function PostDetails({ post }) {
+  return (
+    <div>{JSON.stringify(post)}</div>
+  )
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [{ params: { postId: '1' } }, { params: { postId: '2' } }],
+    fallback: false
+  }
+}
+
+// `getStaticPaths` requires using `getStaticProps`
+export async function getStaticProps(context) {
+  const { params: { postId } } = context
+  const res = await fetch(`sample/api/post/${postId}`)
+  const data = await res.json()
+  return {
+    props: {
+      post: data
+    },
+    revalidate: 10
+  }
+}
+```
+<br />
+Let's, break it down
+<br />
+```JavaScript
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { postId: '1' } },
+      { params: { postId: '2' } },
+      { params: { postId: '3' } }
+    ],
+    fallback: false
+  }
+}
+```
+<br />
+This means that you are letting the server know that you want to build a static page for **`pages/posts/1`**,**` pages/posts/2`**, **`pages/posts/3`** routes.
+Understand this one first before proceeding.
+<br />
+Now, what if the page depends on whatever the result api is sent to you. This is how I handle it.
+<br />
+```JavaScript
+export async function getStaticPaths() {
+
+  const res = await fetch('sample/api/posts')
+  const postLists = await res.json()
+
+  /* 
+  * We know that the result would kinda look like this
+  *
+  * [{id: '1', title: 'lorem', ...}, {id: '2', title: 'lorem2', ...},
+  * {id: '3', title: 'lorem3', ...}]
+  *
+  * Which is a list of posts with a bunch of attribute but we are not interested
+  * with the other attributes but just the id of the post so we need to restructure
+  * the result.
+  */
+  // We need to map it to have the same object structure as the paths requires.
+  // Something like this { params: { postId: '1' } }
+  const paths = postLists.map(post => {
+    return  { params: { postId: post.id.toString() } }
+  })
+
+  return {
+    paths,
+    fallback: false
+  }
+}
+```
+<br />
+The **getStaticPaths** is happy with that. Let's now take care the **getStaticProps**.
+<br />
+  Since we know that the paths are already generated, we need to grab all of those url that is generated 
+  by the getStaticPaths and start using the getStaticProps.
+<br />
+**`const { params: { postId } } = context`** This just means we are getting each **`postId`** that getStaticPaths that they'll send to us.
+Then, use it as a payload to and API that is requesting a single post data. then pass it to the page as props.
+```JavaScript
+export async function getStaticProps(context) {
+  const { params: { postId } } = context
+  const res = await fetch(`sample/api/post/${postId}`)
+  const data = await res.json()
+  return {
+    props: {
+      post: data
+    },
+    revalidate: 10
+  }
+}
+```
+<br />
+And do the same process as what we did on getStaticProps and you're done.
+<br />
+<h2 className="mdx-heading"> Conclusion </h2>
+
+In summary, getServerSideProps, getStaticProps, and getStaticPaths are powerful Next.js methods for generating dynamic pages with pre-fetched data.
+
+
