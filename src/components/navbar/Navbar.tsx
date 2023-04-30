@@ -8,7 +8,7 @@ interface NavbarProps {
 export default function Navbar({path}: NavbarProps) {
   const isRootPath = path === '/' || path === ''
   const isAboutMePath = path === '/about-me'
-  const isBlogsPath = path === '/blogs' || path.startsWith('/blogs')
+  const isBlogsPath = path === '/blog' || path.startsWith('/blog')
   return (
     <nav className=''>
       <Link href='/'>
@@ -40,10 +40,10 @@ export default function Navbar({path}: NavbarProps) {
           </Link>
         </li>
         <li>
-          <Link href='/blogs'
+          <Link href='/blog'
             className={`${isBlogsPath ? ' bg-slate-100 text-black ' : ''} hover:bg-slate-100 hover:text-black p-2 rounded-md transition-all min-w-max lowercase`}
           >
-            Blogs
+            Blog
           </Link>
         </li>
       </ul>
