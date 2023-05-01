@@ -18,7 +18,7 @@ export default function BlogsPage({blogs}:BlogsPageProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className='container max-w-3xl'>
-        <h1 className='text-4xl font-extrabold'>Blog</h1>
+        <h1 className='text-3xl font-bold'>Blog</h1>
         <ul className='mt-2 flex flex-col gap-4'>
           {blogs.map((blog: BlogMeta, index: number) => {
             return <li key={index}>

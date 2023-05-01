@@ -31,7 +31,7 @@ export default function BlogPage({ blog }: BlogpageProps) {
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <main className='container max-w-3xl'>
-      <h1 className='text-4xl font-extrabold'>{blog.meta.title}</h1>
+      <h1 className='text-3xl font-bold'>{blog.meta.title}</h1>
       <MDXRemote {...blog.source} components={{ Image }}/>
     </main>
     </>

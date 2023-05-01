@@ -1,7 +1,21 @@
 import Head from 'next/head'
 import React from 'react'
+import { getAboutMe } from '../api/api'
+import { serialize } from 'next-mdx-remote/serialize'
+import rehypeSlug from 'rehype-slug'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import { AboutMeMeta } from '@/utils/interface'
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
+import Image from 'next/image'
 
-export default function AboutMePage() {
+interface AboutMePageProps {
+  aboutMe: {
+    meta: AboutMeMeta
+    source: MDXRemoteSerializeResult<Record<string, unknown>, Record<string, unknown>>
+  }
+}
+
+export default function AboutMePage({ aboutMe }:AboutMePageProps) {
   return (
     <>
       <Head>
@@ -11,11 +25,31 @@ export default function AboutMePage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className='container max-w-3xl'>
-        <h1 className='text-4xl font-extrabold'>About me</h1>
-        <div>
-          Comming soon...
-        </div>
+        <h1 className='text-3xl font-bold mb-2'>About me</h1>
+        <MDXRemote {...aboutMe.source} components={{ Image }}/>
       </main>
     </>
   )
+}
+
+export const getStaticProps = async () => {
+  const { content, meta } = getAboutMe()
+
+  const mdxSource = await serialize(content, {
+    mdxOptions: {
+      rehypePlugins: [
+        rehypeSlug,
+        [rehypeAutolinkHeadings , { behavior: "wrap" }],
+      ]
+    }
+  })
+  
+  return {
+    props: {
+      aboutMe: {
+        source: mdxSource,
+        meta
+      }
+    }
+  }
 }

@@ -1,7 +1,7 @@
 import path from "path"
 import fs from 'fs'
 import matter from "gray-matter"
-import { Blog } from "@/utils/interface"
+import { AboutMe, AboutMeMeta, Blog } from "@/utils/interface"
 
 const BLOGS_PATH = path.join(process.cwd(), "blogs")
 
@@ -40,4 +40,21 @@ export const getAllBlogs = () => {
         return 0
     }).reverse()
     return posts;
+}
+
+const ABOUT_ME_PATH = path.join(process.cwd(), "jaycabasag")
+
+export const getAboutMe = ():AboutMe => {
+    const aboutMePath = path.join(ABOUT_ME_PATH, 'about-me.mdx')
+    const source = fs.readFileSync(aboutMePath)
+    const { content, data } = matter(source)
+    const aboutMe = {
+      meta: {
+        excerpt: (data.excerpt) ?? '', 
+        title: (data.title) ?? '',
+        date: ((data.date) ?? new Date()).toString()
+      },
+      content
+    }
+    return aboutMe
 }

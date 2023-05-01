@@ -10,3 +10,14 @@ export interface BlogMeta {
     tags: string[]
     date: string
 }
+
+export interface AboutMe {
+    meta: AboutMeMeta
+    content: string
+}
+
+export interface AboutMeMeta {
+    excerpt: string
+    title: string
+    date: string
+}
