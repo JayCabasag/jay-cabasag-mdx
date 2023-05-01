@@ -53,7 +53,7 @@ export default function Home(
             />
           <div>
             <h1 className='text-lg'>{body.bodyMeta.title}</h1>
-            <div className='text-xs'>
+            <div className='text-sm'>
               <MDXRemote {...header.headerSource} components={{ Image }}/>
             </div>
           </div>
@@ -85,7 +85,7 @@ export default function Home(
         </div>
         <div>
           <h1 className='text-lg'>{ monthDifference} months of corporate experience</h1>
-          <div className='text-xs'>
+          <div className='text-sm'>
           <p>as {body.bodyMeta.excerpt}</p>
             <br />
             <MDXRemote {...body.bodySource} components={{ Image }}/>

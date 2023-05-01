@@ -32,7 +32,7 @@ export default function BlogPage({ blog }: BlogpageProps) {
     </Head>
     <main className='container max-w-3xl'>
       <h1 className='text-3xl font-bold'>{blog.meta.title}</h1>
-      <div className='text-xs'>
+      <div className='text-sm'>
         <MDXRemote {...blog.source} components={{ Image }}/>
       </div>
     </main>
