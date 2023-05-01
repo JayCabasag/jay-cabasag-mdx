@@ -3,11 +3,37 @@ import moment from 'moment';
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link';
+import { getHomeBody, getHomeHeader } from './api/api';
+import { serialize } from 'next-mdx-remote/serialize';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import { HomeBodyMeta, HomeHeader, HomeHeaderMeta } from '@/utils/interface';
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 
-export default function Home() {
+interface HomeProps {
+  header: {
+    headerSource: MDXRemoteSerializeResult<Record<string, unknown>, Record<string, unknown>>
+    headerMeta: HomeHeaderMeta
+  },
+  body: {
+    bodySource: MDXRemoteSerializeResult<Record<string, unknown>, Record<string, unknown>>
+    bodyMeta: HomeBodyMeta
+  }
+}
+
+export default function Home(
+  { 
+    header,
+    body 
+  } 
+  : 
+  HomeProps
+  ) 
+{
   const startDate = moment('2022-09-12')
   const currentDate = moment(new Date())
   const monthDifference = currentDate.diff(startDate, 'months')
+
   return (
     <>
       <Head>
@@ -26,10 +52,9 @@ export default function Home() {
               alt='jay-cabasag'
             />
           <div>
-            <h1 className='text-lg'>Software engineer</h1>
+            <h1 className='text-lg'>{body.bodyMeta.title}</h1>
             <div className='text-xs'>
-              <p>Hi, I'm currently working at <span className='font-bold'>Metromart Technologies Inc</span> as a <span className='font-bold'>Junior React Engineer</span>.
-              My primary goal is to develop reusable components utilizing <span className='font-bold'>React JS</span>, <span className='font-bold'>Next JS</span> and <span className='font-bold'>TypeScript</span>.</p>
+              <MDXRemote {...header.headerSource} components={{ Image }}/>
             </div>
           </div>
         </div>
@@ -37,9 +62,9 @@ export default function Home() {
           <p> Social accounts: </p>
           <Link href='https://www.linkedin.com/in/jay-cabasag-a85481221/' target='_blank'>
             <button type="button" className=" text-white bg-[#24292F] hover:bg-[#24292F]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-xs px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 mr-2 mb-2">
-            <svg className='h-4 w-4 mr-1' fill="#ffffff" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" enable-background="new 0 0 100 100" stroke="#ffffff">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"/>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg className='h-4 w-4 mr-1' fill="#ffffff" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" enableBackground="new 0 0 100 100" stroke="#ffffff">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"/>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"/>
             <g id="SVGRepo_iconCarrier"> <g> <path d="M80.667,14H19.315C16.381,14,14,16.325,14,19.188v61.617C14,83.672,16.381,86,19.315,86h61.352 C83.603,86,86,83.672,86,80.805V19.188C86,16.325,83.603,14,80.667,14z M35.354,75.354H24.67V40.995h10.684V75.354z M30.012,36.297 c-3.423,0-6.19-2.774-6.19-6.194c0-3.415,2.767-6.189,6.19-6.189c3.415,0,6.189,2.774,6.189,6.189 C36.201,33.523,33.427,36.297,30.012,36.297z M75.35,75.354H64.683V58.646c0-3.986-0.078-9.111-5.551-9.111 c-5.558,0-6.405,4.341-6.405,8.822v16.998H42.052V40.995h10.245v4.692h0.146c1.426-2.7,4.91-5.549,10.106-5.549 c10.806,0,12.802,7.114,12.802,16.369V75.354z"/> </g> </g>
             </svg>
               LinkedIn
@@ -63,10 +88,46 @@ export default function Home() {
           <div className='text-xs'>
           <p>as Frontend developer</p>
             <br />
-          <p>Apart from that, I also use different frameworks and programming languages to develop a fullstack web applications. Including <span className='font-bold'>Java</span>, <span className='font-bold'>Golang</span> and <span className='font-bold'>Node JS</span> which I often use to develop <span className='font-bold'>Web Services</span> for my side projects.</p>
+            <MDXRemote {...body.bodySource} components={{ Image }}/>
           </div>
         </div>
       </main>
     </>
   )
+}
+
+export const getStaticProps = async () => {
+  const {content: headerContent, meta: headerMeta} = getHomeHeader()
+  const {content: bodyContent, meta: bodyMeta} = getHomeBody()
+
+  const mdxHomeHeaderSource = await serialize(headerContent, {
+    mdxOptions: {
+      rehypePlugins: [
+        rehypeSlug,
+        [rehypeAutolinkHeadings , { behavior: "wrap" }],
+      ]
+    }
+  })
+  const mdxBodyHeaderSource = await serialize(bodyContent, {
+    mdxOptions: {
+      rehypePlugins: [
+        rehypeSlug,
+        [rehypeAutolinkHeadings , { behavior: "wrap" }],
+      ]
+    }
+  })
+
+  console.log(headerMeta, bodyMeta)
+  return {
+    props: {
+      header: {
+        headerSource: mdxHomeHeaderSource,
+        headerMeta: headerMeta
+      },
+      body: {
+        bodySource: mdxBodyHeaderSource,
+        bodyMeta: bodyMeta
+      }
+    }
+  }
 }

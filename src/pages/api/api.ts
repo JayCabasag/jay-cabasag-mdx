@@ -1,7 +1,7 @@
 import path from "path"
 import fs from 'fs'
 import matter from "gray-matter"
-import { AboutMe, AboutMeMeta, Blog } from "@/utils/interface"
+import { AboutMe, AboutMeMeta, Blog, HomeBody, HomeHeader } from "@/utils/interface"
 
 const BLOGS_PATH = path.join(process.cwd(), "blogs")
 
@@ -57,4 +57,34 @@ export const getAboutMe = ():AboutMe => {
       content
     }
     return aboutMe
+}
+
+export const getHomeHeader = (): HomeHeader => {
+    const homeHeaderPath = path.join(ABOUT_ME_PATH, 'home-header.mdx')
+    const source = fs.readFileSync(homeHeaderPath)
+    const { content, data } = matter(source)
+    const homeHeader = {
+        meta: {
+            excerpt: (data.excerpt) ?? '', 
+            title: (data.title) ?? '',
+            date: ((data.date) ?? new Date()).toString()
+        },
+        content
+    }
+    return homeHeader
+}
+
+export const getHomeBody = (): HomeBody => {
+    const homeBodyPath = path.join(ABOUT_ME_PATH, 'home-body.mdx')
+    const source = fs.readFileSync(homeBodyPath)
+    const { content, data } = matter(source)
+    const homeBody = {
+        meta: {
+            excerpt: (data.excerpt) ?? '', 
+            title: (data.title) ?? '',
+            date: ((data.date) ?? new Date()).toString()
+        },
+        content
+    }
+    return homeBody
 }
