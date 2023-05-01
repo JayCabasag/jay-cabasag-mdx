@@ -117,7 +117,6 @@ export const getStaticProps = async () => {
     }
   })
 
-  console.log(headerMeta, bodyMeta)
   return {
     props: {
       header: {
