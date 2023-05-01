@@ -26,7 +26,9 @@ export default function AboutMePage({ aboutMe }:AboutMePageProps) {
       </Head>
       <main className='container max-w-3xl'>
         <h1 className='text-3xl font-bold mb-2'>About me</h1>
-        <MDXRemote {...aboutMe.source} components={{ Image }}/>
+        <div className='text-xs'>
+          <MDXRemote {...aboutMe.source} components={{ Image }}/>
+        </div>
       </main>
     </>
   )

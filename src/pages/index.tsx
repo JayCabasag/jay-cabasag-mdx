@@ -43,7 +43,7 @@ export default function Home(
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className='container max-w-3xl'>
-        <h1 className='text-3xl font-bold'>Jay Cabasag</h1>
+        <h1 className='text-3xl font-bold'>{header.headerMeta.title}</h1>
         <div className=' flex flex-col md:flex-row items-center'>
             <Image
               src='/assets/jayc.png'
@@ -86,7 +86,7 @@ export default function Home(
         <div>
           <h1 className='text-lg'>{ monthDifference} months of corporate experience</h1>
           <div className='text-xs'>
-          <p>as Frontend developer</p>
+          <p>as {body.bodyMeta.excerpt}</p>
             <br />
             <MDXRemote {...body.bodySource} components={{ Image }}/>
           </div>
