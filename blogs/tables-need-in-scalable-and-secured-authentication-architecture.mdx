@@ -1,15 +1,14 @@
 ---
-title: What is Next JS?
+title: Tables need when creating an authentication server
 tags:
   - js
-  - next js
-  - react js
-  - vercel
+  - ts
 date: 2020-04-30
-excerpt: Next.js is a popular open-source React-based web application framework that enables developers to build server-rendered React applications with ease.
+excerpt: Authentication in node js
 ---
-
+<br />
 When it comes to authentication, the tables you need will depend on the specific requirements of your application. However, here are some common tables and their purposes:
+<br />
 <ul className="mdx-bullet-list">
   <li>
   **User table:**
@@ -41,7 +40,7 @@ It's worth noting that some of these tables may be combined or split depending o
 <br />
 Regarding the refresh token table, the purpose of this table is to store refresh tokens that can be used to obtain new access tokens after they expire. Refresh tokens are typically long-lived and can be used to obtain multiple access tokens over their lifetime. By storing refresh tokens in a database table, you can revoke them if a user's access needs to be terminated for any reason (such as a security breach or user request). Additionally, storing refresh tokens in a database table allows you to limit the number of active refresh tokens per user to prevent abuse.
 <br />
-<h2 class="mdx-heading">Why do I need session table, refresh tokens table and access token table, is it necessary to store those?</h2>
+<h2 className="mdx-sub-heading">Why do I need session table, refresh tokens table and access token table, is it necessary to store those?</h2>
 <br />
 The purpose of having a session table, refresh token table, and access token table is to implement a secure and scalable authentication and authorization system in your application.
 <br />
@@ -55,7 +54,7 @@ Here's how the three tables work together:
   </li>
   <li>
 **Refresh token table:** This table is used to store refresh tokens. When a user logs in, you generate a new refresh token and store it in the refresh token table along with the user ID, token ID, expiration time, and any other relevant token information (such as the IP address or user agent). You can use this table to revoke refresh tokens if a user's access needs to be terminated for any reason, and to limit the number of active refresh tokens per user to prevent abuse.
-  <li />
+  </li>
   <li>
 **Access token table:** This table is used to store access tokens. When a user logs in, you generate a new access token and store it in the access token table along with the user ID, token ID, expiration time, and any other relevant token information (such as the IP address or user agent). You can use this table to validate access tokens when a user requests access to protected resources, and to revoke access tokens if a user's access needs to be terminated for any reason.
   </li>
