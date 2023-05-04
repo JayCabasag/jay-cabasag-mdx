@@ -75,6 +75,56 @@ Storing access tokens in a database table is not strictly necessary, but it can 
 </ul>
 <br />
 Overall, while storing access tokens in a database table is not strictly necessary, it can provide several benefits for a secure and scalable authentication and authorization system.
+<br />
+<h2 className="mdx-sub-heading">Sample prisma schema </h2>
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+}
+
+model Session {
+  id            Int     @id @default(autoincrement())
+  userId        Int
+  loginTime     DateTime
+  expirationTime DateTime
+}
+
+model RefreshToken {
+  id            Int     @id @default(autoincrement())
+  token         String  @unique
+  userId        Int
+  expirationTime DateTime
+}
+
+model AccessToken {
+  id            Int     @id @default(autoincrement())
+  token         String  @unique
+  userId        Int
+  expirationTime DateTime
+}
+
+model Role {
+  id       Int     @id @default(autoincrement())
+  name     String
+}
+
+model UserRole {
+  id       Int     @id @default(autoincrement())
+  userId   Int
+  roleId   Int
+}
+```
 
 
 
