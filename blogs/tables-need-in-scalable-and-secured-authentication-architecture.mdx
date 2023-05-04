@@ -3,8 +3,9 @@ title: Tables need when creating an authentication server
 tags:
   - js
   - ts
+  - prisma
 date: 2020-04-30
-excerpt: Authentication in node js
+excerpt: When it comes to authentication, the tables you need will depend on the specific requirements of your application.
 ---
 <br />
 When it comes to authentication, the tables you need will depend on the specific requirements of your application. However, here are some common tables and their purposes:
@@ -77,7 +78,8 @@ Storing access tokens in a database table is not strictly necessary, but it can 
 Overall, while storing access tokens in a database table is not strictly necessary, it can provide several benefits for a secure and scalable authentication and authorization system.
 <br />
 <h2 className="mdx-sub-heading">Sample prisma schema </h2>
-```prisma
+<br />
+```TypeScript
 generator client {
   provider = "prisma-client-js"
 }
@@ -125,8 +127,8 @@ model UserRole {
   roleId   Int
 }
 ```
-
-
+<br />
+I'll be adding new blog article for Creating a node js authentication with Next JS as Frontend.
 
 
 
